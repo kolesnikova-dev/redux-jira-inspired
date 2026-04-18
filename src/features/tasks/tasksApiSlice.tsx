@@ -1,18 +1,9 @@
 // Need to use the React-specific entry point to import `createApi`
+import { ThemeContext } from '@emotion/react';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-type Task = {
-  id: number
-  todo: string
-  completed: string
-}
-
-type TasksApiResponse = {
-  todos: Task[]
-  total: number
-  skip: number
-  limit: number
-}
+import { STATUS_PENDING, PRIORITY_UNPRIORITIZED, TODAY_DATE } from '../../config/taskConfig.ts';
+import type { TasksApiResponse, Task, TransformedTasksResponse } from '../../types/index.ts';
 
 // Define a service using a base URL and expected endpoints
 export const tasksApiSlice = createApi({
@@ -24,8 +15,26 @@ export const tasksApiSlice = createApi({
     // Supply generics for the return type (in this case `TasksApiResponse`)
     // and the expected query argument. If there is no argument, use `void`
     // for the argument type instead.
-    getTasks: build.query<TasksApiResponse, number>({
+    getTasks: build.query<TransformedTasksResponse, number>({
       query: (limit = 10) => `?limit=${limit.toString()}`,
+      // Transform the response to add priority and createdDate
+      transformResponse: (response: TasksApiResponse) => {
+        // Map through tasks and add new fields
+        const transformedTasks: Task[] = response.todos.map(todo => ({
+          id: todo.id,
+          status: STATUS_PENDING,
+          task: todo.todo,
+          priority: PRIORITY_UNPRIORITIZED,
+          createdDate: TODAY_DATE,
+        }));
+        
+        return {
+          tasks: transformedTasks,
+          total: response.total,
+          skip: response.skip,
+          limit: response.limit,
+        };
+      },
       // `providesTags` determines which 'tag' is attached to the
       // cached data returned by the query.
       providesTags: (_result, _error, id) => [{ type: 'Tasks', id }],
