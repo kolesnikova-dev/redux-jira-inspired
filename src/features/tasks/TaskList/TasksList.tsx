@@ -1,21 +1,21 @@
 import type { JSX } from 'react';
 import { useState } from 'react';
-import { useGetQuotesQuery } from './tasksApiSlice.ts';
+import { useGetTasksQuery } from '../internal.ts';
 
-import styles from './TaskList.module.css';
+import styles from './TasksList.module.css';
 
 const options = [5, 10, 20, 30];
 
-export const Quotes = (): JSX.Element | null => {
-  const [numberOfQuotes, setNumberOfQuotes] = useState(10);
+export const TasksList = (): JSX.Element | null => {
+  const [numberOfTasks, setNumberOfTasks] = useState(10);
   // Using a query hook automatically fetches data and returns query values
   const { data, isError, isLoading, isSuccess } =
-    useGetQuotesQuery(numberOfQuotes);
+    useGetTasksQuery(numberOfTasks);
 
   if (isError) {
     return (
-      <div>
-        <h1>There was an error!!!</h1>
+      <div className={styles.container}>
+        <h1>There was an error</h1>
       </div>
     );
   }
@@ -31,12 +31,12 @@ export const Quotes = (): JSX.Element | null => {
   if (isSuccess) {
     return (
       <div className={styles.container}>
-        <h3>Select the Quantity of Quotes to Fetch:</h3>
+        <h3>Select the Quantity of Tasks to Fetch:</h3>
         <select
           className={styles.select}
-          value={numberOfQuotes}
+          value={numberOfTasks}
           onChange={(e) => {
-            setNumberOfQuotes(Number(e.target.value));
+            setNumberOfTasks(Number(e.target.value));
           }}
         >
           {options.map((option) => (
@@ -45,11 +45,11 @@ export const Quotes = (): JSX.Element | null => {
             </option>
           ))}
         </select>
-        {data.quotes.map(({ author, quote, id }) => (
+        {data.tasks.map(({ todo, completed, id }) => (
           <blockquote key={id}>
-            &ldquo;{quote}&rdquo;
+            &ldquo;{todo}&rdquo;
             <footer>
-              <cite>{author}</cite>
+              <cite>{completed}</cite>
             </footer>
           </blockquote>
         ))}

@@ -1,12 +1,16 @@
-import './App.css'
+import { ErrorBoundary } from 'react-error-boundary';
 
-const App:React.FC = () => {
+import { TasksList } from './features/index.ts';
+import './App.css';
+
+export const App:React.FC = () => {
 
   return (
-    <>
-    hello
-    </>
-  )
-}
+    <div id="center">
+      <ErrorBoundary fallback={<p>⚠️Something went wrong</p>}>
+        <TasksList />
+      </ErrorBoundary>
+    </div>
+  );
+};
 
-export default App

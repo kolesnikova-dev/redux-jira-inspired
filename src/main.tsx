@@ -1,16 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { App } from './App.tsx';
+import { store } from './store/store.ts';
+import './index.css';
 
-const root = document.getElementById('root');
+const container = document.getElementById('root');
 
-if (root !== null) {
-  createRoot(root).render(
+if (container) {
+  const root = createRoot(container);
+
+  root.render(
     <StrictMode>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </StrictMode>,
-  )
+  );
+} else {
+  throw new Error(
+    "Root element with ID 'root' was not found in the document. Ensure there is a corresponding HTML element with the ID 'root' in your HTML file.",
+  );
 }
-
-
