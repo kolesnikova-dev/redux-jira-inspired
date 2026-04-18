@@ -4,3 +4,4 @@ export const STATUS_PENDING = 'pending';
 export const ASSIGNEE_UNASSIGNED = 'unassigned';
 export const REPORTER = 'Veronika Kolesnikova';
 export const UNRESOLVED = 'unresolved';
+export const RESOLVED = 'resolved';

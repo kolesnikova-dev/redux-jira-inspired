@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGetTasksQuery } from '../internal.ts';
 
 import Table from '@mui/material/Table';
@@ -11,10 +11,12 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 
+import { capitalize } from '../../../utils/generalUtils.ts';
+
 import type { Task } from '../../../types/index.ts';
-import { ASSIGNEE_UNASSIGNED, STATUS_PENDING, REPORTER, PRIORITY_UNPRIORITIZED, UNRESOLVED } from '../../../config/taskConfig.ts';
 
 import styles from './TasksList.module.css';
+import { UNRESOLVED, RESOLVED } from '../../../config/taskConfig.ts';
 
 const options = [5, 10, 20, 30];
 
@@ -30,10 +32,9 @@ const CheckBox: React.FC<{ checked: boolean; onChange: (checked: boolean) => voi
   );
 };
 
-const NONE = 'none';
-
 const TasksTable = ({ tasks }: {tasks: Task[]}) => {
   const [checkedRows, setCheckedRows] = useState<Record<number, boolean>>({});
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
   const handleCheckboxChange = (taskId: number, isChecked: boolean) => {
     setCheckedRows(prev => ({
@@ -42,16 +43,31 @@ const TasksTable = ({ tasks }: {tasks: Task[]}) => {
     }));
   };
 
+  const handleAllRowsCheckboxChange = () => {
+    setIsAllChecked(prev => !prev);
+  };
+
+  useEffect(() => {
+    if (isAllChecked) {
+      tasks.map((task) => handleCheckboxChange(task.id, true));
+    } else {
+      tasks.map((task) => handleCheckboxChange(task.id, false));
+    }
+  }, [isAllChecked]);
+
+  const NONE = capitalize('none');
+
+  const rows = ['Work', 'Assignee', 'Reporter', 'Priority', 'Status', 'Resolution', 'Created', 'Updated', 'Due date'];
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="Tasks table">
         <TableHead>
           <TableRow>
-            <TableCell>Task</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell><CheckBox checked={isAllChecked} onChange={handleAllRowsCheckboxChange} /></TableCell>
+            {rows.map((row, index) => (
+              <TableCell key={row + index} align="right">{row}</TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -67,14 +83,14 @@ const TasksTable = ({ tasks }: {tasks: Task[]}) => {
                 />
               </TableCell>
               <TableCell>{task.task}</TableCell>
-              <TableCell>{ASSIGNEE_UNASSIGNED}</TableCell>
-              <TableCell>{REPORTER}</TableCell>
-              <TableCell>{PRIORITY_UNPRIORITIZED}</TableCell>
-              <TableCell>{STATUS_PENDING}</TableCell>
-              <TableCell>{UNRESOLVED}</TableCell>
+              <TableCell>{capitalize(task.assignee)}</TableCell>
+              <TableCell>{task.reporter}</TableCell>
+              <TableCell>{capitalize(task.priority)}</TableCell>
+              <TableCell>{capitalize(task.status)}</TableCell>
+              <TableCell>{task.resolution ? capitalize(UNRESOLVED) : capitalize(RESOLVED)}</TableCell>
               <TableCell>{new Date(task.createdDate).toDateString()}</TableCell>
-              <TableCell>{NONE}</TableCell>
-              <TableCell>{NONE}</TableCell>
+              <TableCell>{task.updated ?? NONE}</TableCell>
+              <TableCell>{task.dueDate ?? NONE}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -106,7 +122,6 @@ export const TasksList = (): JSX.Element | null => {
   }
 
   if (isSuccess) {
-    console.log(data);
     return (
       <div className={styles.container}>
         <h3>Select the Quantity of Tasks to Fetch:</h3>

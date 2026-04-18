@@ -2,7 +2,7 @@
 import { ThemeContext } from '@emotion/react';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { STATUS_PENDING, PRIORITY_UNPRIORITIZED, TODAY_DATE } from '../../config/taskConfig.ts';
+import { STATUS_PENDING, PRIORITY_UNPRIORITIZED, TODAY_DATE, ASSIGNEE_UNASSIGNED, REPORTER } from '../../config/taskConfig.ts';
 import type { TasksApiResponse, Task, TransformedTasksResponse } from '../../types/index.ts';
 
 // Define a service using a base URL and expected endpoints
@@ -26,6 +26,9 @@ export const tasksApiSlice = createApi({
           task: todo.todo,
           priority: PRIORITY_UNPRIORITIZED,
           createdDate: TODAY_DATE,
+          assignee: ASSIGNEE_UNASSIGNED,
+          reporter: REPORTER,
+          resolution: false,
         }));
         
         return {

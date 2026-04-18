@@ -17,6 +17,11 @@ export interface Task {
   status: string,
   priority: string,
   createdDate: string,
+  updated?: string,
+  dueDate?: string,
+  assignee: string,
+  reporter: string,
+  resolution: boolean,
 }
 
 export type TransformedTasksResponse = {
