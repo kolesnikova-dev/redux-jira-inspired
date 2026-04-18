@@ -29,6 +29,7 @@ export const TasksList = (): JSX.Element | null => {
   }
 
   if (isSuccess) {
+    console.log(data);
     return (
       <div className={styles.container}>
         <h3>Select the Quantity of Tasks to Fetch:</h3>
@@ -45,7 +46,7 @@ export const TasksList = (): JSX.Element | null => {
             </option>
           ))}
         </select>
-        {data.tasks.map(({ todo, completed, id }) => (
+        {data.todos.map(({ todo, completed, id }) => (
           <blockquote key={id}>
             &ldquo;{todo}&rdquo;
             <footer>
