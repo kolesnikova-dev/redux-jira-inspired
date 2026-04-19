@@ -6,38 +6,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import { TasksList } from './features/index.ts';
+import { tabArray } from './config/tabsConfig.ts';
+import type { TabPanelProps,TabConfig } from './types/index.ts';
 import './App.css';
 
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-interface TabConfig {
-  label: string;
-  component: React.ReactNode | (() => React.ReactNode);
-  props?: Record<string, string>;
-}
-
-const TAB_CONFIG = {
-  summary: {
-    label: 'Summary',
-    component: TasksList,
-  },
-  tasksList: {
-    label: 'List',
-    component: TasksList,
-  }, 
-  tasksDetails: {
-    label: 'Details',
-    component: TasksList,
-  },
-};
-
-const tabArray = Object.values(TAB_CONFIG);
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -69,13 +41,14 @@ export const App:React.FC = () => {
     setValue(newValue);
   };
 
-  const renderComponent = (config: TabConfig) => {
+  const renderTab = (config: TabConfig) => {
     if (typeof config.component === 'function') {
       const Component = config.component;
       return <Component {...config.props} />;
     }
     return config.component;
   };
+
   return (
     <div id="center">
       <ErrorBoundary fallback={<p>⚠️Something went wrong</p>}>
@@ -89,7 +62,7 @@ export const App:React.FC = () => {
           </Box>
           {tabArray.map((tab, index) => (
             <TabPanel key={tab.label + index} value={value} index={index}> 
-              {renderComponent(tab)} 
+              {renderTab(tab)} 
             </TabPanel>
           ))}
         </Box>

@@ -30,3 +30,15 @@ export type TransformedTasksResponse = {
   skip: number
   limit: number
 }
+
+export interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+export interface TabConfig {
+  label: string;
+  component: React.ReactNode | (() => React.ReactNode);
+  props?: Record<string, string>;
+}
