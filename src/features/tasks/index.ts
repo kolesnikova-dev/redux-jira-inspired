@@ -1,2 +1,3 @@
-export { tasksApiSlice } from './tasksApiSlice.tsx';
-export { TasksList } from './TaskList/TasksList.tsx';
+export { useGetTasksQuery, tasksApiSlice } from './tasksApiSlice.tsx';
+export { tasksSlice, selectAllTasks, type TasksState } from './tasksSlice.tsx';
+

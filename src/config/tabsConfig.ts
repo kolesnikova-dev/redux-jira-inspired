@@ -1,17 +1,17 @@
-import { TasksList } from '../features/index.ts';
+import { TasksList, TasksSummary, TasksDetail } from '../components/index.ts';
 
 const TAB_CONFIG = {
-  summary: {
+  tasksSummary: {
     label: 'Summary',
-    component: TasksList,
+    component: TasksSummary,
   },
   tasksList: {
     label: 'List',
     component: TasksList,
   }, 
-  tasksDetails: {
-    label: 'Details',
-    component: TasksList,
+  tasksDetail: {
+    label: 'Detail',
+    component: TasksDetail,
   },
 };
 

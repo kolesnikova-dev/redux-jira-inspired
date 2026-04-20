@@ -1,6 +1,4 @@
-import type { JSX } from 'react';
 import React, { useState, useEffect } from 'react';
-import { useGetTasksQuery } from '../internal.ts';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,14 +9,11 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 
-import { capitalize } from '../../../utils/generalUtils.ts';
+import { capitalize } from '../../utils/generalUtils.ts';
 
-import type { Task } from '../../../types/index.ts';
+import type { Task } from '../../types/index.ts';
 
-import styles from './TasksList.module.css';
-import { UNRESOLVED, RESOLVED } from '../../../config/taskConfig.ts';
-
-const options = [5, 10, 20, 30];
+import { UNRESOLVED, RESOLVED } from '../../config/taskConfig.ts';
 
 const CheckBox: React.FC<{ checked: boolean; onChange: (checked: boolean) => void }> = ({ 
   checked, 
@@ -32,7 +27,7 @@ const CheckBox: React.FC<{ checked: boolean; onChange: (checked: boolean) => voi
   );
 };
 
-const TasksTable = ({ tasks }: {tasks: Task[]}) => {
+export const TasksTable = ({ tasks }: {tasks: Task[]}) => {
   const [checkedRows, setCheckedRows] = useState<Record<number, boolean>>({});
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
@@ -97,51 +92,4 @@ const TasksTable = ({ tasks }: {tasks: Task[]}) => {
       </Table>
     </TableContainer>
   );
-};
-
-export const TasksList = (): JSX.Element | null => {
-  const [numberOfTasks, setNumberOfTasks] = useState(10);
-  // Using a query hook automatically fetches data and returns query values
-  const { data, isError, isLoading, isSuccess } =
-    useGetTasksQuery(numberOfTasks);
-
-  if (isError) {
-    return (
-      <div className={styles.container}>
-        <h1>There was an error</h1>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-
-  if (isSuccess) {
-    return (
-      <div className={styles.container}>
-        <h3>Select the Quantity of Tasks to Fetch:</h3>
-        <select
-          className={styles.select}
-          value={numberOfTasks}
-          onChange={(e) => {
-            setNumberOfTasks(Number(e.target.value));
-          }}
-        >
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-        <TasksTable tasks={data.tasks} />
-      </div>
-    );
-  }
-
-  return null;
 };
